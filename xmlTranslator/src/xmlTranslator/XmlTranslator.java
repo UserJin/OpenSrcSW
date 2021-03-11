@@ -58,7 +58,7 @@ public class XmlTranslator
 		XmlInstatiate(doc); //doc를 바탕으로 xml문서 생성
 	}
 	
-	static File[] ReadFiles() //지정된 문서의 파일들을 파일배열에 저장하여 반환하는 메소드
+	static File[] ReadFiles() //지정된 폴더의 파일들을 파일배열에 저장하여 반환하는 메소드
 	{
 		String path = "C:\\Users\\김남진\\Documents\\Atelier\\Storage\\SimpleIR\\Food"; //파일이 저장된 폴더 경로를 설정
 		File dir = new File(path);
