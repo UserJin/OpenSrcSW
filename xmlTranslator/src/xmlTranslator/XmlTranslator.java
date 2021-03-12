@@ -75,7 +75,6 @@ public class XmlTranslator
 		InputStreamReader reader = new InputStreamReader(input, "UTF-8");
 		BufferedReader in = new BufferedReader(reader);
 		
-		char c;
 		String b;
 		
 		while((b=in.readLine()) != null)
@@ -85,17 +84,11 @@ public class XmlTranslator
 		
 		a = a.replaceFirst("<p>", "<FIrst>");
 		a = replaceLast(a, "</p>", "<Last>");
-		a = a.replaceAll("</p>            <p>", " ");
-		String Contents = substringBetween(a, "<FIrst>", "<Last>");
+		a = a.trim().replaceAll(" +", " "); //연속된 공백을 하나의 공백으로 변경
+		String Contents = substringBetween(a, "<FIrst>", "<Last>"); //html의 내용만 추출
+		Contents = Contents.replaceAll("\\<.*?\\>", ""); //태그 제거
 		
 		return Contents;
-		
-		//System.out.println(Contents);
-		//System.out.println(a.replaceAll("(</p>)[^&]*(<p>)", " "));
-		//System.out.println("Substract : " + str);
-		//String str2 = a.replaceAll("\\<.*?\\>", "");
-		//System.out.println(str2.replaceAll("\\.(.*?)^\\s", ""));
-		
 	}
 	
 	static String ReadTitle(File file) throws IOException //파일의 이름을 읽어서 반환하는 메소드
@@ -113,7 +106,7 @@ public class XmlTranslator
 			a += b;
 		}
 		
-		String Title = substringBetween(a,"<title>","</title>");
+		String Title = substringBetween(a,"<title>","</title>"); //html의 제목만 추출
 		
 		return Title;
 	}
