@@ -85,6 +85,8 @@ public class makeCollection
 		String Contents = substringBetween(a, "<FIrst>", "<Last>"); //html의 내용만 추출
 		Contents = Contents.replaceAll("\\<.*?\\>", ""); //태그 제거
 		
+		in.close();
+		
 		return Contents;
 	}
 	
@@ -104,6 +106,8 @@ public class makeCollection
 		}
 		
 		String Title = substringBetween(a,"<title>","</title>"); //html의 제목만 추출
+		
+		in.close();
 		
 		return Title;
 	}
