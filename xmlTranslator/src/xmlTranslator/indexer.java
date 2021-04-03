@@ -175,6 +175,8 @@ public class indexer
 	
 	static class IdWeight implements Serializable //단어가 존재하는 문서의 id와 가중치를 가지는 객체
 	{
+		private static final long serialVersionUID = -1199928921090174441L;
+		
 		int id; //문서의 id
 		float weight; //문서내에서 단어의 가중치
 		
@@ -190,8 +192,15 @@ public class indexer
 			
 			return Integer.toString(id) + " " + num + " ";
 		}
+		public int GetId() //객체의 id를 반환
+		{
+			return id;
+		}
 		
-
+		public float GetWeight() //객체의 빈도수를 반환
+		{
+			return weight;
+		}
 	}
 	
 	static public float WeightCal(int docSum, int frequency) //단어가 존재하는 문서의 갯수와 특정 문서에서의 빈도수를 통해 가중치를 계산함

@@ -10,28 +10,25 @@ public class Kuir
 
 	public static void main(String[] args) throws ParserConfigurationException, IOException, TransformerException, SAXException, ClassNotFoundException
 	{
-		if(args.length != 2)
+		if(args[0].equals("-c"))
 		{
-			System.out.println("입력 방식 : java Kuir -c/-k [파일 경로]");
+			makeCollection col = new makeCollection(args[1]);
 		}
-		else
+		else if(args[0].equals("-k"))
 		{
-			if(args[0].equals("-c"))
-			{
-				makeCollection col = new makeCollection(args[1]);
-			}
-			else if(args[0].equals("-k"))
-			{
-				makeKeyword key = new makeKeyword(args[1]);
-			}
-			else if(args[0].equals("-i"))
-			{
-				indexer map = new indexer(args[1]);
-			}
+			makeKeyword key = new makeKeyword(args[1]);
 		}
-
-
-		
+		else if(args[0].equals("-i"))
+		{
+			indexer map = new indexer(args[1]);
+		}
+		else if(args[0].equals("-s"))
+		{
+			if(args[2].equals("-q"))
+			{
+				searcher search = new searcher(args[1], args[3]);
+			}
+		}		
 	}
 
 }
