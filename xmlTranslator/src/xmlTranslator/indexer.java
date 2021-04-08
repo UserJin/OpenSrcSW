@@ -175,8 +175,8 @@ public class indexer
 	
 	static class IdWeight implements Serializable //단어가 존재하는 문서의 id와 가중치를 가지는 객체
 	{
-		int id; //문서의 id
-		float weight; //문서내에서 단어의 가중치
+		private int id; //문서의 id
+		private float weight; //문서내에서 단어의 가중치
 		
 		public IdWeight(int id2, float wei)
 		{
@@ -191,9 +191,19 @@ public class indexer
 			return Integer.toString(id) + " " + num + " ";
 		}
 		
-
+		
+		public int GetId()
+		{
+			return id;
+		}
+		
+		
+		public float GetWeight()
+		{
+			return weight;
+		}
 	}
-	
+
 	static public float WeightCal(int docSum, int frequency) //단어가 존재하는 문서의 갯수와 특정 문서에서의 빈도수를 통해 가중치를 계산함
 	{
 		return frequency * (float)(Math.log(5f/docSum)); // 빈도수 * 자연로그(전체 문서 수 / 등장 문서 수)

@@ -24,9 +24,9 @@ public class Kuir
 			}
 			else if(args[0].equals("-s"))
 			{
-				if(args[2] == "-q")
+				if(args[2].equals("-q"))
 				{
-					
+					searcher search = new searcher(args[1], args[3]);
 				}
 			}
 		
