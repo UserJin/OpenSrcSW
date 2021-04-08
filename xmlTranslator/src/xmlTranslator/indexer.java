@@ -192,15 +192,13 @@ public class indexer
 			
 			return Integer.toString(id) + " " + num + " ";
 		}
-		
-		
-		public int GetId()
+		public int GetId() //°´Ã¼ÀÇ id¸¦ ¹ÝÈ¯
 		{
 			return id;
 		}
-		
-		
-		public float GetWeight()
+
+		public float GetWeight() //°´Ã¼ÀÇ ºóµµ¼ö¸¦ ¹ÝÈ¯
+
 		{
 			return weight;
 		}

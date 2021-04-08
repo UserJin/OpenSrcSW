@@ -2,7 +2,6 @@ package xmlTranslator;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
@@ -42,30 +41,8 @@ public class searcher
 		objectInputStream.close();
 		
 		HashMap hashMap = (HashMap)object;
-		//arr = 단어와 단어의 가중치
-		/*
-		float[] sim = new float[5]; //각 문서와의 문장의 유사도를 담는 배열
-		for(int i=0;i<arr.size();i++)
-		{
-			float[] indexSim = new float[5]; //특정 단어의 문서별 가중치를 저장하는 함수
-			if(hashMap.containsKey(arr.get(i).GetKey())) //해쉬맵에 특정 단어가 포함되어 있을 경우
-			{
-				ArrayList<IdWeight> idwList = (ArrayList<IdWeight>) hashMap.get(arr.get(i).GetKey()); //특정 단어의 문서별 가중치 리스트를 가져옴
-				for(int j=0;j< idwList.size();j++)
-				{
-					indexSim[idwList.get(j).GetId()] = idwList.get(j).GetWeight();
-				}
-			}
-			for(int j =0;j<sim.length;j++)
-			{
-		        sim[j] += indexSim[j] * arr.get(i).GetWeight(); //단어 가중치 * 문서 가중치
-			}
-		}
-		*/
-		
-		//아래로 새로 작성
-		
-		ArrayList<WWeDWe>[] docSim = new ArrayList[5];
+
+		ArrayList<WWeDWe>[] docSim = new ArrayList[5]; //단어의 가중치와 문서 내 가중치를 담는 리스트 배열, 문서가 5개이므로 배열의 길이도 5개
 		
 		for(int i =0;i<docSim.length;i++)
 		{
@@ -87,21 +64,13 @@ public class searcher
 				docSim[j].add(new WWeDWe(arr.get(i).GetWeight(), indexSim[j]));
 			}
 		}
-		PrintWeight(docSim);
-		
-		/*
-		for(int i =0;i<sim.length;i++)
-		{
-			System.out.println(i + "번 문서의 유사도 : " + sim[i]);
-		}
-		*/
-		
-		//PrintTitle(Sort(sim));
+		CalcSim(docSim); //가중치를 바탕으로 유사도 계산
 	}
 	
-	public static void CalcSim(ArrayList<WWeDWe>[] arr) //단어의 가중치와 문서 내 가중치를 바탕으로 코사인 유사도를 계산
+	public static void CalcSim(ArrayList<WWeDWe>[] arr) throws ParserConfigurationException, SAXException, IOException //단어의 가중치와 문서 내 가중치를 바탕으로 코사인 유사도를 계산
 	{
 		float[] cosSim = new float[arr.length]; //코사인 유사도를 담을 float배열
+		float[] innerSim = InnerProduct(arr); //내적치
 		for(int i=0;i<arr.length;i++) //리스트 배열의 길이 만큼 반복함
 		{
 			float sizeWord = 0;
@@ -112,23 +81,30 @@ public class searcher
 				sizeWord += Math.pow(arr[i].get(j).GetWordWeight(), 2); //각 단어 가중치의 제곱의 Sum
 				sizeDoc += Math.pow(arr[i].get(j).GetDocWeight(), 2); //각 문서 가중치의 제곱의 Sum
 			}
-			denom = (float) Math.sqrt(sizeWord) + (float) Math.sqrt(sizeDoc);
-			cosSim[i] = 1f / denom; // 1f = InnerProduct
+			denom = (float) Math.sqrt(sizeWord) + (float) Math.sqrt(sizeDoc); //
+			cosSim[i] = innerSim[i] / denom; // 1f = InnerProduct
 		}
+		
+		for(int i=0;i<cosSim.length;i++)
+		{
+			System.out.println(i+"번 문서의 유사도 : " + String.format("%.2f", cosSim[i])); //코사인 유사도를 소수점 2자리 까지 출력함
+		}
+		
+		PrintTitle(Sort(cosSim)); //계산된 가중치를 정렬하고 출력
 	}
 	
-	public static void PrintWeight(ArrayList<WWeDWe>[] arr) //문장과 각 문서의 유사도를 출력하는 메소드
+	public static float[] InnerProduct(ArrayList<WWeDWe>[] arr) //가중치를 바탕으로 내적을 계산하여 그 값의 배열을 반환
 	{
-		float[] sumWeight = new float[arr.length];
-		
-		for(int i =0;i<sumWeight.length;i++)
+		float[] innerSim = new float[arr.length];
+		for(int i =0;i<innerSim.length;i++)
 		{
-			for(int j=0;j<arr[i].size();j++)
+			for(int j =0;j<arr[i].size();j++)
 			{
-				sumWeight[i] += arr[i].get(j).GetWordWeight() * arr[i].get(j).GetDocWeight();
+				innerSim[i] += arr[i].get(j).GetWordWeight() *  arr[i].get(j).GetDocWeight(); //내적 계산
 			}
-			System.out.println(i + "번 문서의 유사도 : " + sumWeight[i]);
 		}
+		
+		return innerSim;
 	}
 	
 	public static void PrintTitle(IdWeight[] arr) throws ParserConfigurationException, SAXException, IOException //정렬된 유사도를 바탕으로 3순위 까지의 문서의 제목을 출력하는 메소드
@@ -157,7 +133,10 @@ public class searcher
 		
 		for(int i =0;i<3;i++) //3순위까지의 제목을 출력함
 		{
-			System.out.println((i+1) + "순위 " + title[arr[i].GetId()]);
+			if(arr[i].GetWeight() != 0) //가중치가 만약 0이 아닐 경우만 출력함
+			{
+				System.out.println((i+1) + "순위 " + title[arr[i].GetId()]);
+			}
 		}
 	}
 	
@@ -171,8 +150,8 @@ public class searcher
 		for(int i= 0;i<ki.size();i++)
 		{
 			Keyword kwrd = ki.get(i);
-			
 			arr.add(new KeyWeight(kwrd.getString(), 1f));
+
 		}
 		
 		return arr;
@@ -194,6 +173,7 @@ public class searcher
 			return key;
 		}
 		
+
 		public float GetWeight()
 		{
 			return weight;

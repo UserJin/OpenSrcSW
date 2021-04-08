@@ -10,26 +10,25 @@ public class Kuir
 
 	public static void main(String[] args) throws ParserConfigurationException, IOException, TransformerException, SAXException, ClassNotFoundException
 	{
-			if(args[0].equals("-c"))
+		if(args[0].equals("-c"))
+		{
+			makeCollection col = new makeCollection(args[1]);
+		}
+		else if(args[0].equals("-k"))
+		{
+			makeKeyword key = new makeKeyword(args[1]);
+		}
+		else if(args[0].equals("-i"))
+		{
+			indexer map = new indexer(args[1]);
+		}
+		else if(args[0].equals("-s"))
+		{
+			if(args[2].equals("-q"))
 			{
-				makeCollection col = new makeCollection(args[1]);
+				searcher search = new searcher(args[1], args[3]);
 			}
-			else if(args[0].equals("-k"))
-			{
-				makeKeyword key = new makeKeyword(args[1]);
-			}
-			else if(args[0].equals("-i"))
-			{
-				indexer map = new indexer(args[1]);
-			}
-			else if(args[0].equals("-s"))
-			{
-				if(args[2].equals("-q"))
-				{
-					searcher search = new searcher(args[1], args[3]);
-				}
-			}
-		
+		}	
 	}
 
 }
