@@ -29,11 +29,11 @@ public class searcher
 	public searcher(String path, String query) throws ClassNotFoundException, IOException, ParserConfigurationException, SAXException
 	{
 		ArrayList<KeyWeight> qArr = MorAnalyze(query); //입력받은 querry를 형태소와 문장내의 빈도수로 저장함
-		CalcSim(path, qArr);  //저장된 데이터를 바탕으로 유사도와 상위 3문서의 제목을 출력함
+		ReadSim(path, qArr);  //저장된 데이터를 바탕으로 유사도와 상위 3문서의 제목을 출력함
 		
 	}
 	
-	static void CalcSim(String path, ArrayList<KeyWeight> arr) throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException //주어진 querry와 각 문서의 유사도를 출력하고 정렬하여 상위 3문서의 제목을 출력하는 메소드
+	static void ReadSim(String path, ArrayList<KeyWeight> arr) throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException //주어진 querry와 각 문서의 유사도를 출력하고 정렬하여 상위 3문서의 제목을 출력하는 메소드
 	{
 		FileInputStream fileInputStream = new FileInputStream(path);
 		ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
@@ -99,7 +99,25 @@ public class searcher
 		//PrintTitle(Sort(sim));
 	}
 	
-	public static void PrintWeight(ArrayList<WWeDWe>[] arr)
+	public static void CalcSim(ArrayList<WWeDWe>[] arr) //단어의 가중치와 문서 내 가중치를 바탕으로 코사인 유사도를 계산
+	{
+		float[] cosSim = new float[arr.length]; //코사인 유사도를 담을 float배열
+		for(int i=0;i<arr.length;i++) //리스트 배열의 길이 만큼 반복함
+		{
+			float sizeWord = 0;
+			float sizeDoc = 0;
+			float denom;
+			for(int j=0;j<arr[i].size();j++)
+			{
+				sizeWord += Math.pow(arr[i].get(j).GetWordWeight(), 2); //각 단어 가중치의 제곱의 Sum
+				sizeDoc += Math.pow(arr[i].get(j).GetDocWeight(), 2); //각 문서 가중치의 제곱의 Sum
+			}
+			denom = (float) Math.sqrt(sizeWord) + (float) Math.sqrt(sizeDoc);
+			cosSim[i] = 1f / denom; // 1f = InnerProduct
+		}
+	}
+	
+	public static void PrintWeight(ArrayList<WWeDWe>[] arr) //문장과 각 문서의 유사도를 출력하는 메소드
 	{
 		float[] sumWeight = new float[arr.length];
 		
@@ -113,7 +131,7 @@ public class searcher
 		}
 	}
 	
-	public static void PrintTitle(IdWeight[] arr) throws ParserConfigurationException, SAXException, IOException //정렬된 유사도를 바탕으로 3순위 까지의 문서의 제목을 출력함
+	public static void PrintTitle(IdWeight[] arr) throws ParserConfigurationException, SAXException, IOException //정렬된 유사도를 바탕으로 3순위 까지의 문서의 제목을 출력하는 메소드
 	{
 		String[] title = new String[5];
 		

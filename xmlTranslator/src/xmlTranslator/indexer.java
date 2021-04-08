@@ -175,6 +175,8 @@ public class indexer
 	
 	static class IdWeight implements Serializable //단어가 존재하는 문서의 id와 가중치를 가지는 객체
 	{
+		private static final long serialVersionUID = -1199928921090174441L;
+		
 		private int id; //문서의 id
 		private float weight; //문서내에서 단어의 가중치
 		
