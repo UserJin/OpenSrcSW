@@ -81,8 +81,15 @@ public class searcher
 				sizeWord += Math.pow(arr[i].get(j).GetWordWeight(), 2); //각 단어 가중치의 제곱의 Sum
 				sizeDoc += Math.pow(arr[i].get(j).GetDocWeight(), 2); //각 문서 가중치의 제곱의 Sum
 			}
-			denom = (float) Math.sqrt(sizeWord) + (float) Math.sqrt(sizeDoc); //
-			cosSim[i] = innerSim[i] / denom; // 1f = InnerProduct
+			denom = (float) Math.sqrt(sizeWord) * (float) Math.sqrt(sizeDoc);
+			if(denom != 0) //분모가 0이 아닐 때 만 나눔
+			{
+				cosSim[i] = innerSim[i] / denom; // 1f = InnerProduct
+			}
+			else //분모가 0이면 값 자체를 0으로 변경
+			{
+				cosSim[i] = 0f;
+			}
 		}
 		
 		for(int i=0;i<cosSim.length;i++)
